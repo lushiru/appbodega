@@ -22,7 +22,7 @@ export default function Login() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Sign In</Text>
+            <Text style={styles.title}>Sign Ins</Text>
             <TextInput
                 style={styles.input}
                 placeholder="Email"
