@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const login = async (email: string, password: string) => {
 
-    const url = `http://192.168.1.81:3000/auth/login`;
+    const url = `https://adminnestapi.paginaslm.cl/auth/login`;
 
 
     try {
