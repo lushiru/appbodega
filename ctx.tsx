@@ -2,6 +2,7 @@
 import { router } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { profile } from './api/auth';
 
 interface AuthContextType {
     signIn: (token: string) => void;
@@ -31,15 +32,46 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
     // In a real app, you'd fetch the session here
     useEffect(() => {
-        SecureStore.getItemAsync('session').then(session => {
+        /*SecureStore.getItemAsync('session').then(session => {
             setSession(session);
             setIsLoading(false);
+
             router.replace('/about');
-        });
+        });*/
+        checkSession();
+
     }, []);
 
-    useEffect(() => {
-        console.log("cambio sesion")
+    const checkSession = async () => {
+        const sessiontoken = await SecureStore.getItemAsync('session')
+        if (sessiontoken) {
+            try {
+                const profres = await profile();
+                if (profres.status == "error") {
+                    await SecureStore.deleteItemAsync('session');
+                    setSession(null);
+                    setIsLoading(false);
+                    router.replace('/login');
+                } else {
+                    setSession(profres.access_token);
+                    await SecureStore.setItemAsync('session', profres.access_token);
+                    setIsLoading(false);
+                    router.replace('/about');
+                }
+            } catch (error) {
+                console.log(error);
+                await SecureStore.deleteItemAsync('session');
+                setSession(null);
+                setIsLoading(false);
+                router.replace('/login');
+            }
+        } else {
+            setIsLoading(false);
+            router.replace('/login');
+        }
+    }
+
+    /*useEffect(() => {
         if (!isLoading) {
             if (!session) {
                 // Redirect to sign-in page if not signed in
@@ -51,7 +83,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
                 router.replace('/(app)/(tabs)/about');
             }
         }
-    }, [session]);
+    }, [session]);*/
 
     return (
         <AuthContext.Provider
@@ -63,12 +95,13 @@ export function SessionProvider({ children }: { children: ReactNode }) {
                     const dummySession = token;
                     await SecureStore.setItemAsync('session', dummySession);
                     setSession(dummySession);
-
+                    router.replace('/about');
 
                 },
                 signOut: async () => {
                     setSession(null);
                     await SecureStore.deleteItemAsync('session');
+                    router.replace('/login');
                 },
                 session,
                 isLoading,
