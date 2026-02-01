@@ -141,3 +141,30 @@ export async function editarproducto(id: number, nombre: string, marca: string, 
     }
 }
 
+export async function cantidadActualizar(id: number, cantidad: number) {
+    const url = `${process.env.EXPO_PUBLIC_API_URL}producto/cambiarcantidad/${id}`;
+
+    const token = await SecureStore.getItemAsync('session')
+
+    try {
+
+        const resultado = await axios.patch(url, {
+            cantidad,
+        }, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            }
+        })
+        return resultado.data
+
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            console.log("error = " + error)
+            if (error.message == "Request failed with status code 429") { return { message: "ha enviado demasiadas solicitudes", status: "error" } }
+            return { message: error.message, status: "error" }
+        } else {
+            return error;
+        }
+    }
+}
