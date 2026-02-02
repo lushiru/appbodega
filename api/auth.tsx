@@ -12,11 +12,11 @@ export const login = async (email: string, password: string) => {
         const resultado = await axios.post(url, {
             email,
             password,
-        }, {
+        }/*, {
             headers: {
                 "Content-Type": "application/json",
             }
-        })
+        }*/)
         return resultado.data
 
     } catch (error: unknown) {
@@ -41,7 +41,6 @@ export const profile = async () => {
 
         const resultado = await axios.get(url, {
             headers: {
-                "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`,
             }
         })
