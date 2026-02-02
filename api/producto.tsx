@@ -16,7 +16,7 @@ export async function crear(nombre: string, marca: string, cantidad: number) {
         }, {
             headers: {
                 //"Content-Type": "application/json",   
-                "Content-Type": "application/x-www-form-urlencoded",
+                "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`,
             }
         })
@@ -44,7 +44,7 @@ export async function listarProductos(query: string) {
         const resultado = await axios.get(url, {
             headers: {
                 //"Content-Type": "application/json",
-                "Content-Type": "application/x-www-form-urlencoded",
+                "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`,
             }
         })
@@ -71,7 +71,7 @@ export async function eliminarProducto(id: number) {
         const resultado = await axios.delete(url, {
             headers: {
                 //"Content-Type": "application/json",
-                "Content-Type": "application/x-www-form-urlencoded",
+                "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`,
             }
         })
@@ -98,7 +98,7 @@ export async function unproducto(id: number) {
         const resultado = await axios.get(url, {
             headers: {
                 //"Content-Type": "application/json",
-                "Content-Type": "application/x-www-form-urlencoded",
+                "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`,
             }
         })
@@ -129,7 +129,7 @@ export async function editarproducto(id: number, nombre: string, marca: string, 
         }, {
             headers: {
                 //"Content-Type": "application/json",
-                "Content-Type": "application/x-www-form-urlencoded",
+                "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`,
             }
         })
@@ -158,7 +158,7 @@ export async function cantidadActualizar(id: number, cantidad: number) {
         }, {
             headers: {
                 //"Content-Type": "application/json",
-                "Content-Type": "application/x-www-form-urlencoded",
+                "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`,
             }
         })

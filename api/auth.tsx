@@ -14,7 +14,7 @@ export const login = async (email: string, password: string) => {
             password,
         }, {
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
+                "Content-Type": "application/json",
             }
         })
         return resultado.data
@@ -41,7 +41,7 @@ export const profile = async () => {
 
         const resultado = await axios.get(url, {
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
+                "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`,
             }
         })
