@@ -140,3 +140,59 @@ export const activaReenviar = async (email: string) => {
     }
 
 }
+
+export const recuperarPass = async (email: string) => {
+
+    const url = `${process.env.EXPO_PUBLIC_API_URL}auth/recuperarpass`;
+
+    try {
+
+        const resultado = await axios.post(url, {
+            email,
+        }, {
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+        return resultado.data
+
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            console.log("error = " + error)
+            if (error.message == "Request failed with status code 429") { return { message: "ha enviado demasiadas solicitudes", status: "error" } }
+            return { message: error.message, status: "error" }
+        } else {
+            return error;
+        }
+    }
+
+}
+
+export const cambiarPass = async (email: string, codigo: number, password: string) => {
+
+    const url = `${process.env.EXPO_PUBLIC_API_URL}auth/cambiarpass`;
+
+    try {
+
+        const resultado = await axios.post(url, {
+            email,
+            codigo,
+            password,
+        }, {
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+        return resultado.data
+
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            console.log("error = " + error)
+            if (error.message == "Request failed with status code 429") { return { message: "ha enviado demasiadas solicitudes", status: "error" } }
+            return { message: error.message, status: "error" }
+        } else {
+            return error;
+        }
+    }
+
+}

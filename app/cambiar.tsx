@@ -1,4 +1,4 @@
-import { recuperarPass } from "@/api/auth";
+import { cambiarPass } from "@/api/auth";
 import { router } from "expo-router";
 import { useFormik } from "formik";
 import { Button, StyleSheet, Text, TextInput, ToastAndroid, View } from "react-native";
@@ -7,21 +7,27 @@ import * as Yup from "yup";
 export function initialValues() {
     return {
         email: "",
+        codigo: 0,
+        password: "",
     };
 }
 
 export function validationSchame() {
     return Yup.object({
         email: Yup.string().email("email es invalido").required("email es requerido"),
+        codigo: Yup.number().required("codigo es requerido"),
+        password: Yup.string().required("password es requerido"),
     });
 }
 
 interface LoginData {
     email: string;
+    codigo: number;
+    password: string;
 }
 
 
-export default function Recuperar() {
+export default function Cambiar() {
 
     const formik = useFormik({
         initialValues: initialValues(),
@@ -29,10 +35,11 @@ export default function Recuperar() {
         validateOnChange: false,
         onSubmit: async (formValue: LoginData) => {
             try {
-                const { email } = formValue;
-                const response = await recuperarPass(email);
+                const { email, codigo, password } = formValue;
+                const response = await cambiarPass(email, codigo, password);
                 if (response.status !== "error") {
-                    ToastAndroid.show("se ha enviado un Email con el codigo", ToastAndroid.LONG);
+                    ToastAndroid.show("Se ha cambiado la contraseña", ToastAndroid.LONG);
+                    router.push("/login");
                 } else {
                     ToastAndroid.show("Error = " + response.message, ToastAndroid.LONG);
                 }
@@ -44,7 +51,7 @@ export default function Recuperar() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Recuperar contraseña</Text>
+            <Text style={styles.title}>Cambiar contraseña</Text>
             <TextInput
                 style={styles.input}
                 placeholder="Email"
@@ -56,13 +63,30 @@ export default function Recuperar() {
             {formik.touched.email && formik.errors.email ? (
                 <Text>{formik.errors.email}</Text>
             ) : null}
-            <Button title="Recuperar contraseña" disabled={formik.isSubmitting} onPress={() => formik.handleSubmit()} color="#e74b1cff" />
-            <View style={{ height: 10 }} />
-            <Button title="ir a Cambiar contraseña" onPress={() => router.push("./cambiar")} />
+            <TextInput
+                style={styles.input}
+                placeholder="Codigo"
+                value={formik.values.codigo.toString()}
+                onChangeText={(text) => formik.setFieldValue("codigo", text)}
+                keyboardType="numeric"
+            />
+            {formik.touched.codigo && formik.errors.codigo ? (
+                <Text>{formik.errors.codigo}</Text>
+            ) : null}
+            <TextInput
+                style={styles.input}
+                placeholder="Password"
+                value={formik.values.password}
+                onChangeText={(text) => formik.setFieldValue("password", text)}
+                secureTextEntry
+            />
+            {formik.touched.password && formik.errors.password ? (
+                <Text>{formik.errors.password}</Text>
+            ) : null}
+            <Button title="Cambiar contraseña" disabled={formik.isSubmitting} onPress={() => formik.handleSubmit()} color="#e74b1cff" />
             <View style={{ height: 10 }} />
             <Button title="Volver" onPress={() => router.push("/login")} />
             <View style={{ height: 10 }} />
-            <Text>Al recuperar contraseña se enviara un codigo al correo electronico, deberar ir a cambiar contraseña e ingresar el codigo y la nueva contraseña</Text>
         </View>
     );
 }
