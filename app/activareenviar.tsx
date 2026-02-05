@@ -1,34 +1,26 @@
-// app/sign-in.tsx
-import { router } from 'expo-router';
-import { useFormik } from 'formik';
-import React from 'react';
-import { Button, StyleSheet, Text, TextInput, ToastAndroid, View } from 'react-native';
+import { activaReenviar } from "@/api/auth";
+import { router } from "expo-router";
+import { useFormik } from "formik";
+import { Button, StyleSheet, Text, TextInput, ToastAndroid, View } from "react-native";
 import * as Yup from 'yup';
-import { login } from '../api/auth';
-import { useSession } from '../ctx'; // We will create this context later
 
 export function initialValues() {
     return {
         email: "",
-        password: "",
     };
 }
 
 export function validationSchame() {
     return Yup.object({
         email: Yup.string().email("email es invalido").required("email es requerido"),
-        password: Yup.string().required("password es requerido"),
     });
 }
 
 interface LoginData {
     email: string;
-    password: string;
 }
 
-export default function Login() {
-
-    const { signIn } = useSession();
+export default function ActivaReenviar() {
 
     const formik = useFormik({
         initialValues: initialValues(),
@@ -36,10 +28,10 @@ export default function Login() {
         validateOnChange: false,
         onSubmit: async (formValue: LoginData) => {
             try {
-                const { email, password } = formValue;
-                const response = await login(email, password);
-                if (response.access_token) {
-                    signIn(response.access_token);
+                const { email } = formValue;
+                const response = await activaReenviar(email);
+                if (response.status !== "error") {
+                    ToastAndroid.show("Codigo reenviado exitosamente", ToastAndroid.LONG);
                 } else {
                     ToastAndroid.show("Error = " + response.message, ToastAndroid.LONG);
                 }
@@ -49,9 +41,10 @@ export default function Login() {
         },
     });
 
+
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Iniciar Sesión</Text>
+            <Text style={styles.title}>ActivaReenviar</Text>
             <TextInput
                 style={styles.input}
                 placeholder="Email"
@@ -63,21 +56,9 @@ export default function Login() {
             {formik.touched.email && formik.errors.email ? (
                 <Text>{formik.errors.email}</Text>
             ) : null}
-            <TextInput
-                style={styles.input}
-                placeholder="Password"
-                value={formik.values.password}
-                onChangeText={(text) => formik.setFieldValue("password", text)}
-                secureTextEntry
-            />
-            {formik.touched.password && formik.errors.password ? (
-                <Text>{formik.errors.password}</Text>
-            ) : null}
-            <Button title="Iniciar sesion" disabled={formik.isSubmitting} onPress={() => formik.handleSubmit()} color="#e74b1cff" />
+            <Button title="Reenviar codigo" disabled={formik.isSubmitting} onPress={() => formik.handleSubmit()} color="#e74b1cff" />
             <View style={{ height: 10 }} />
-            <Button title="Registrarse" onPress={() => router.push('/register')} />
-            <View style={{ height: 10 }} />
-            <Button title="Recuperar contraseña" onPress={() => router.push('./recuperar')} />
+            <Button title="Volver" onPress={() => router.back()} />
         </View>
     );
 }

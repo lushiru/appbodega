@@ -1,9 +1,10 @@
 import { Text, View } from "react-native";
 
-export default function Activar() {
+
+export default function Recuperar() {
     return (
         <View>
-            <Text>Activar</Text>
+            <Text>Recuperar</Text>
         </View>
     );
-}
+}   

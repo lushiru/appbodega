@@ -23,7 +23,14 @@ export default function AppLayout() {
   return (
     <Tabs
       screenListeners={{
-        tabPress: () => check(),
+        tabPress: (e) => {
+          check();
+          let name = e.target;
+          let name2 = name?.split("-");
+          if (name2 && name2[0] == "bodega") {
+            router.replace('/(app)/(tabs)/bodega');
+          }
+        },
       }}
     >
 

@@ -1,32 +1,29 @@
-import { router } from 'expo-router';
+import { activarcuenta } from "@/api/auth";
+import { router } from "expo-router";
 import { useFormik } from "formik";
 import { Button, StyleSheet, Text, TextInput, ToastAndroid, View } from "react-native";
 import * as Yup from "yup";
-import { crearcuenta } from "../api/auth";
 
 export function initialValues() {
     return {
-        nombre: "",
         email: "",
-        password: "",
+        codigo: 0,
     };
 }
 
 export function validationSchame() {
     return Yup.object({
-        nombre: Yup.string().required("nombre es requerido"),
         email: Yup.string().email("email es invalido").required("email es requerido"),
-        password: Yup.string().required("password es requerido"),
+        codigo: Yup.number().required("codigo es requerido"),
     });
 }
 
 interface LoginData {
-    nombre: string;
     email: string;
-    password: string;
+    codigo: number;
 }
 
-export default function Register() {
+export default function Activa() {
 
     const formik = useFormik({
         initialValues: initialValues(),
@@ -34,11 +31,10 @@ export default function Register() {
         validateOnChange: false,
         onSubmit: async (formValue: LoginData) => {
             try {
-                const { nombre, email, password } = formValue;
-                const response = await crearcuenta(nombre, email, password);
+                const { email, codigo } = formValue;
+                const response = await activarcuenta(email, codigo);
                 if (response.status !== "error") {
-                    ToastAndroid.show("Cuenta creada exitosamente, se envio un email para activar", ToastAndroid.LONG);
-
+                    ToastAndroid.show("Cuenta activada exitosamente", ToastAndroid.LONG);
                 } else {
                     ToastAndroid.show("Error = " + response.message, ToastAndroid.LONG);
                 }
@@ -51,18 +47,7 @@ export default function Register() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Registar Cuenta</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Nombre"
-                value={formik.values.nombre}
-                onChangeText={(text) => formik.setFieldValue("nombre", text)}
-                keyboardType="default"
-                autoCapitalize="none"
-            />
-            {formik.touched.nombre && formik.errors.nombre ? (
-                <Text>{formik.errors.nombre}</Text>
-            ) : null}
+            <Text style={styles.title}>Activa</Text>
             <TextInput
                 style={styles.input}
                 placeholder="Email"
@@ -76,21 +61,20 @@ export default function Register() {
             ) : null}
             <TextInput
                 style={styles.input}
-                placeholder="Password"
-                value={formik.values.password}
-                onChangeText={(text) => formik.setFieldValue("password", text)}
-                secureTextEntry
+                placeholder="Codigo"
+                value={formik.values.codigo.toString()}
+                onChangeText={(text) => formik.setFieldValue("codigo", text)}
+                keyboardType="numeric"
+                autoCapitalize="none"
             />
-            {formik.touched.password && formik.errors.password ? (
-                <Text>{formik.errors.password}</Text>
+            {formik.touched.codigo && formik.errors.codigo ? (
+                <Text>{formik.errors.codigo}</Text>
             ) : null}
-            <Button title="Registrarse" disabled={formik.isSubmitting} onPress={() => formik.handleSubmit()} color="#e74b1cff" />
+            <Button title="Activar" disabled={formik.isSubmitting} onPress={() => formik.handleSubmit()} color="#e74b1cff" />
             <View style={{ height: 10 }} />
-            <Button title="Iniciar sesion" onPress={() => router.push('/login')} />
+            <Button title="Reenviar codigo" onPress={() => router.push('./activareenviar')} />
             <View style={{ height: 10 }} />
-            <Button title="Activar" onPress={() => router.push('./activa')} />
-            <View style={{ height: 10 }} />
-            <Text>Despues de crear cuenta, debe activarla con un codigo enviado a su email</Text>
+            <Button title="Volver" onPress={() => router.push('/login')} />
         </View>
     );
 }

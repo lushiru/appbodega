@@ -52,7 +52,6 @@ export default function BodegaProducto() {
             const palabras: string[] = ir.split("?");
             ir = palabras[1];
         }
-        console.log(ir);
         try {
             const prod = await listarProductos(ir);
             setProductos(prod?.data);
@@ -110,7 +109,7 @@ export default function BodegaProducto() {
                                 <Text style={styles.headerCell5}>Editar</Text>
                                 <Text style={styles.headerCell6}>Eliminar</Text>
                             </View>
-                            {productos.map((producto, index) => (
+                            {productos && productos.map((producto, index) => (
                                 <View style={styles.dataRow} key={index}>
                                     <Text style={styles.dataCell1}>{producto.id}</Text>
                                     <Text style={styles.dataCell2}>{producto.nombre}</Text>
@@ -125,11 +124,14 @@ export default function BodegaProducto() {
                 </View>
                 <View style={{ height: 10 }} />
                 <View style={styles.viewpagination}>
-                    {links?.first ? <View style={styles.pagination}><Pressable onPress={() => setPaginaver(`${links.first}`)} ><Text style={styles.btnpag}>{`<<`}</Text></Pressable></View> : <View style={styles.pagination}><Text style={styles.btnpag}>{`<<`}</Text></View>}
-                    {links?.previous ? <View style={styles.pagination}><Pressable onPress={() => setPaginaver(`${links.previous}`)} ><Text style={styles.btnpag}>{`<`}</Text></Pressable></View> : <View style={styles.pagination}><Text style={styles.btnpag}>{`<`}</Text></View>}
-                    <View style={styles.pagination}><Text style={styles.btnpag}>{currentPage}</Text></View>
-                    {links?.next ? <View style={styles.pagination}><Pressable onPress={() => setPaginaver(`${links.next}`)} ><Text style={styles.btnpag}>{`>`}</Text></Pressable></View> : <View style={styles.pagination}><Text style={styles.btnpag}>{`>`}</Text></View>}
-                    {links?.last ? <View style={styles.pagination}><Pressable onPress={() => setPaginaver(`${links.last}`)} ><Text style={styles.btnpag}>{`>>`}</Text></Pressable></View> : <View style={styles.pagination}><Text style={styles.btnpag}>{`>>`}</Text></View>}
+                    {links ?
+                        <>
+                            {links?.first ? <View style={styles.pagination}><Pressable onPress={() => setPaginaver(`${links.first}`)} ><Text style={styles.btnpag}>{`<<`}</Text></Pressable></View> : <View style={styles.pagination}><Text style={styles.btnpag}>{`<<`}</Text></View>}
+                            {links?.previous ? <View style={styles.pagination}><Pressable onPress={() => setPaginaver(`${links.previous}`)} ><Text style={styles.btnpag}>{`<`}</Text></Pressable></View> : <View style={styles.pagination}><Text style={styles.btnpag}>{`<`}</Text></View>}
+                            <View style={styles.pagination}><Text style={styles.btnpag}>{currentPage}</Text></View>
+                            {links?.next ? <View style={styles.pagination}><Pressable onPress={() => setPaginaver(`${links.next}`)} ><Text style={styles.btnpag}>{`>`}</Text></Pressable></View> : <View style={styles.pagination}><Text style={styles.btnpag}>{`>`}</Text></View>}
+                            {links?.last ? <View style={styles.pagination}><Pressable onPress={() => setPaginaver(`${links.last}`)} ><Text style={styles.btnpag}>{`>>`}</Text></Pressable></View> : <View style={styles.pagination}><Text style={styles.btnpag}>{`>>`}</Text></View>}
+                        </> : <Text>No hay datos</Text>}
                 </View>
             </SafeAreaView>
         </View>

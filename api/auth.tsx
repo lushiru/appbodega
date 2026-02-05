@@ -85,3 +85,58 @@ export const crearcuenta = async (nombre: string, email: string, password: strin
     }
 
 }
+
+export const activarcuenta = async (email: string, codigo: number) => {
+
+    const url = `${process.env.EXPO_PUBLIC_API_URL}auth/verificar`;
+
+    try {
+
+        const resultado = await axios.post(url, {
+            email,
+            codigo,
+        }, {
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+        return resultado.data
+
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            console.log("error = " + error)
+            if (error.message == "Request failed with status code 429") { return { message: "ha enviado demasiadas solicitudes", status: "error" } }
+            return { message: error.message, status: "error" }
+        } else {
+            return error;
+        }
+    }
+
+}
+
+export const activaReenviar = async (email: string) => {
+
+    const url = `${process.env.EXPO_PUBLIC_API_URL}auth/reenviaractivacion`;
+
+    try {
+
+        const resultado = await axios.post(url, {
+            email,
+        }, {
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+        return resultado.data
+
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            console.log("error = " + error)
+            if (error.message == "Request failed with status code 429") { return { message: "ha enviado demasiadas solicitudes", status: "error" } }
+            return { message: error.message, status: "error" }
+        } else {
+            return error;
+        }
+    }
+
+}
